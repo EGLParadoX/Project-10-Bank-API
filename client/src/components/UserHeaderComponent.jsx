@@ -1,33 +1,60 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import ApiService from '../services/ApiService';
-import { loginSuccess } from '../redux/actions';
+import { updateUserProfile } from '../redux/actions';
+import EditProfileModal from './EditProfilModalComponent';
+import { useNavigate } from 'react-router-dom'; 
 
 const UserHeaderComponent = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); 
   const user = useSelector((state) => state.user.userData);
-  const fullName = user ? `${user.firstName} ${user.lastName}` : '';
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
+    if (!isAuthenticated) {
+      navigate('/sign-in');
+    }
+  }, [isAuthenticated, navigate]);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSaveProfile = (firstName, lastName) => {
+    dispatch(updateUserProfile({ firstName, lastName }));
+    closeModal();
+  };
+
+  useEffect(() => {
+    console.log('useEffect triggered');
+    
+    if (user && user.token && !user.firstName) {
+      console.log('Fetching user profile...');
       try {
-        const token = user.token;
-        const profileResponse = await ApiService.getUserProfile(token);
-        dispatch(loginSuccess(profileResponse.data)); 
+        const fetchUserProfile = async () => {
+          const profileResponse = await ApiService.getUserProfile(user.token);
+          dispatch(updateUserProfile(profileResponse.data.body));
+        };
+        fetchUserProfile();
       } catch (error) {
         console.error('Error fetching user profile:', error);
       }
-    };
-
-    if (user && user.token) {
-      fetchUserProfile();
     }
   }, [dispatch, user]);
 
+  const fullName = user && user.firstName ? `${user.firstName} ${user.lastName}` : 'Loading...';
+
   return (
     <div className="header">
-      <h1>Welcome back<br />{fullName}!</h1>
-      <button className="edit-button">Edit Name</button>
+      <h1>Welcome back<br />{fullName}</h1>
+      <button className="edit-button" onClick={openModal}>Edit Name</button>
+      <EditProfileModal isOpen={isModalOpen} onClose={closeModal} onSave={handleSaveProfile} />
     </div>
   );
 };

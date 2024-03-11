@@ -12,13 +12,13 @@ const ApiService = {
   },
 
   getUserProfile: async (token) => {
-    return axios.get(`${API_BASE_URL}/user/profile`, {
+    return axios.post(`${API_BASE_URL}/user/profile`, {}, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
   },
-
+  
   updateUserProfile: async (token, userData) => {
     return axios.put(`${API_BASE_URL}/user/profile`, userData, {
       headers: {

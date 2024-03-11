@@ -1,34 +1,30 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { loginSuccess, loginFailure } from '../redux/actions';
-import ApiService from '../services/ApiService'; 
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux'; 
+import { useNavigate } from 'react-router-dom'; 
+import { handleSubmit } from '../utils/handler';
 
 const SignInFormComponent = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate(); 
-  const [error, setError] = useState(''); 
+  const dispatch = useDispatch(); 
+  const navigate = useNavigate();
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const email = e.target.username.value; 
-    const password = e.target.password.value;
-
-    try {
-      const response = await ApiService.login(email, password);
-      dispatch(loginSuccess(response.data)); 
-      navigate('/user'); 
-    } catch (error) {
-      setError(error.response.data.message || 'Échec de la connexion. Veuillez réessayer.');
-      dispatch(loginFailure(error.response.data)); 
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/user');
     }
+  }, [isAuthenticated, navigate]);
+
+  const [error, setError] = useState('');
+
+  const handleFormSubmit = (e) => {
+    handleSubmit(e, dispatch, navigate, setError);
   };
 
   return (
     <section className="sign-in-content">
       <i className="fa fa-user-circle sign-in-icon"></i>
       <h1>Sign In</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleFormSubmit}>
         <div className="input-wrapper">
           <label htmlFor="username">Username</label>
           <input type="text" id="username" name="username" required />
