@@ -1,9 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { logout } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
-import { loginSuccess, loginFailure } from '../redux/actions';
-import { storeUserToken } from '../utils/storage'; 
-import ApiService from '../services/ApiService';
+import { loginSuccess } from '../redux/actions';
 
 export const useLogoutHandler = () => {
     const dispatch = useDispatch();
@@ -17,26 +15,12 @@ export const useLogoutHandler = () => {
 };
 
 
-export const handleSubmit = async (e, dispatch, navigate, setError) => {
-    e.preventDefault();
-    const email = e.target.username.value;
-    const password = e.target.password.value;
-    const rememberMe = e.target['remember-me'].checked;
-  
-    try {
-      const loginResponse = await ApiService.login(email, password);
-      const userData = {
-        token: loginResponse.data.body.token,
-      };
-  
-      if (rememberMe) {
-        storeUserToken(userData.token);
-      }
-  
-      dispatch(loginSuccess(userData));
-      navigate('/user');
-    } catch (error) {
-      setError(error.response.data.message || 'Échec de la connexion. Veuillez réessayer.');
-      dispatch(loginFailure(error.response.data));
-    }
-  };
+export const handleSubmit = (e, dispatch, navigate) => {
+  e.preventDefault();
+  const email = e.target.username.value;
+  const password = e.target.password.value;
+  const rememberMe = e.target['remember-me'].checked;
+
+  dispatch(loginSuccess({ email, password, rememberMe, navigate }));
+};
+
