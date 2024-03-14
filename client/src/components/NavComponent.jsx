@@ -7,7 +7,6 @@ import logo from '../assets/argentBankLogo.png';
 
 const NavComponent = () => {
     const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
-    console.log("État de l'authentification:", isAuthenticated); 
 
 
   

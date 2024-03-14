@@ -32,10 +32,8 @@ const UserHeaderComponent = () => {
   };
 
   useEffect(() => {
-    console.log('useEffect triggered');
     
     if (user && user.token && !user.firstName) {
-      console.log('Fetching user profile...');
       try {
         const fetchUserProfile = async () => {
           const profileResponse = await ApiService.getUserProfile(user.token);

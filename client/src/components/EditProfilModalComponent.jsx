@@ -12,13 +12,11 @@ const EditProfileModal = ({ isOpen, onClose }) => {
         onClose();
     };
   
-    console.log("EditProfileModal - isOpen:", isOpen);
-  
     return (
       <div className={`modal ${isOpen ? 'open' : ''}`}>
         {isOpen && (
           <div className="modal-content edit-profile-modal">
-            <span className="close" onClick={() => {console.log("Close button clicked!"); onClose();} }>&times;</span>
+            <span className="close" onClick={() => {onClose();} }>&times;</span>
             <h2>Edit Profile</h2>
             <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First Name" />
             <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Last Name" />

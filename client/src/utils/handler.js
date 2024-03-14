@@ -10,10 +10,8 @@ export const useLogoutHandler = () => {
     const navigate = useNavigate();
 
     return (event) => {
-        console.log("Début de la déconnexion");
         event.preventDefault();
         dispatch(logout());
-        console.log("Déconnexion dispatchée");
         navigate('/');
     };
 };
@@ -33,7 +31,6 @@ export const handleSubmit = async (e, dispatch, navigate, setError) => {
   
       if (rememberMe) {
         storeUserToken(userData.token);
-        console.log('Token sauvegardé dans le stockage local :', userData.token);
       }
   
       dispatch(loginSuccess(userData));
