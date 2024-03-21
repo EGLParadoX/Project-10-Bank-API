@@ -3,14 +3,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import ApiService from '../services/ApiService';
 import { updateUserProfile } from '../redux/actions';
 import EditProfileModal from './EditProfilModalComponent';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 
 const UserHeaderComponent = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const user = useSelector((state) => state.user.userData);
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); 
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -20,10 +21,12 @@ const UserHeaderComponent = () => {
 
   const openModal = () => {
     setIsModalOpen(true);
+    setIsEditing(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setIsEditing(false); 
   };
 
   const handleSaveProfile = (firstName, lastName) => {
@@ -32,7 +35,6 @@ const UserHeaderComponent = () => {
   };
 
   useEffect(() => {
-    
     if (user && user.token && !user.firstName) {
       try {
         const fetchUserProfile = async () => {
@@ -50,9 +52,16 @@ const UserHeaderComponent = () => {
 
   return (
     <div className="header">
-      <h1>Welcome back<br />{fullName}</h1>
-      <button className="edit-button" onClick={openModal}>Edit Name</button>
-      <EditProfileModal isOpen={isModalOpen} onClose={closeModal} onSave={handleSaveProfile} />
+      <h1>Welcome back<br />{!isEditing && fullName}</h1>
+      {!isEditing && <button className="edit-button" onClick={openModal}>Edit Name</button>}
+      <EditProfileModal
+  isOpen={isModalOpen}
+  onClose={closeModal}
+  onSave={handleSaveProfile}
+  currentFirstName={user.firstName} 
+  currentLastName={user.lastName}  
+/>
+
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'; 
 import { useNavigate } from 'react-router-dom'; 
 import { handleSubmit } from '../utils/handler';
@@ -7,17 +7,15 @@ const SignInFormComponent = () => {
   const dispatch = useDispatch(); 
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
-
+  const loginError = useSelector(state => state.user.error); 
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/user');
     }
   }, [isAuthenticated, navigate]);
 
-  const [error, setError] = useState('');
-
   const handleFormSubmit = (e) => {
-    handleSubmit(e, dispatch, navigate, setError);
+    handleSubmit(e, dispatch, navigate);
   };
 
   return (
@@ -37,7 +35,7 @@ const SignInFormComponent = () => {
           <input type="checkbox" id="remember-me" name="remember-me" />
           <label htmlFor="remember-me">Remember me</label>
         </div>
-        {error && <div className="error-message">{error}</div>}
+        {loginError && <div className="error-message">{loginError}</div>} 
         <button type="submit" className="sign-in-button">Sign In</button>
       </form>
     </section>

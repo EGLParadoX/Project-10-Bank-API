@@ -1,26 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Import useEffect
 import { useDispatch } from 'react-redux';
 import { updateUserProfile } from '../redux/actions';
 
-const EditProfileModal = ({ isOpen, onClose }) => {
+const EditProfileModal = ({ isOpen, onClose, currentFirstName, currentLastName }) => {
     const dispatch = useDispatch();
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-  
+    const [firstName, setFirstName] = useState(currentFirstName || '');
+    const [lastName, setLastName] = useState(currentLastName || '');   
+
+    useEffect(() => {
+      setFirstName(currentFirstName || '');
+      setLastName(currentLastName || '');
+    }, [currentFirstName, currentLastName]);
+
     const handleSave = () => {
         dispatch(updateUserProfile({ firstName, lastName }));
-        onClose();
+        onClose(); 
+    };
+
+    const handleCancel = () => {
+        onClose(); 
     };
   
     return (
-      <div className={`modal ${isOpen ? 'open' : ''}`}>
+      <div className={isOpen ? 'modal open' : 'modal'}>
         {isOpen && (
-          <div className="modal-content edit-profile-modal">
-            <span className="close" onClick={() => {onClose();} }>&times;</span>
-            <h2>Edit Profile</h2>
+          <div className="modal-content">
+            <div className='inputs'>
             <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First Name" />
             <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Last Name" />
-            <button className="edit-profile-button" onClick={handleSave}>Save</button>
+            </div>
+            <div className="modal-actions">
+              <button className="save-btn" onClick={handleSave}>Save</button>
+              <button className="cancel-btn" onClick={handleCancel}>Cancel</button>
+            </div>
           </div>
         )}
       </div>
