@@ -54,7 +54,7 @@ paths:
           description: New transaction details
           required: true
           schema:
-            $ref: '#/definitions/Transaction'
+            $ref: '#/definitions/NewTransaction'
       produces:
         - application/json
       responses:
@@ -104,7 +104,7 @@ paths:
       tags:
         - Transaction Module
       summary: Update transaction
-      description: API for updating transaction description
+      description: API for updating transaction category and note
       parameters:
         - in: header
           name: Authorization
@@ -118,13 +118,10 @@ paths:
           type: string
         - in: body
           name: body
-          description: Updated transaction description
+          description: Updated transaction category and note
           required: true
           schema:
-            type: object
-            properties:
-              description:
-                type: string
+            $ref: '#/definitions/UpdateTransaction'
       produces:
         - application/json
       responses:
@@ -155,9 +152,34 @@ definitions:
         type: number
       description:
         type: string
+      category:
+        type: string
+      transactionType:
+        type: string
+      note:
+        type: string
       date:
         type: string
         format: date-time
-
-
-
+  NewTransaction:
+    type: object
+    properties:
+      accountId:
+        type: string
+      amount:
+        type: number
+      description:
+        type: string
+      transactionType:
+        type: string
+      category:
+        type: string
+      note:
+        type: string
+  UpdateTransaction:
+    type: object
+    properties:
+      category:
+        type: string
+      note:
+        type: string
