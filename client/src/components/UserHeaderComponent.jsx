@@ -11,7 +11,7 @@ const UserHeaderComponent = () => {
   const user = useSelector((state) => state.user.userData);
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false); 
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -48,20 +48,19 @@ const UserHeaderComponent = () => {
     }
   }, [dispatch, user]);
 
-  const fullName = user && user.firstName ? `${user.firstName} ${user.lastName}` : 'Loading...';
+  const fullName = user ? `${user.firstName} ${user.lastName}` : 'Loading...';
 
   return (
     <div className="header">
       <h1>Welcome back<br />{!isEditing && fullName}</h1>
       {!isEditing && <button className="edit-button" onClick={openModal}>Edit Name</button>}
       <EditProfileModal
-  isOpen={isModalOpen}
-  onClose={closeModal}
-  onSave={handleSaveProfile}
-  currentFirstName={user.firstName} 
-  currentLastName={user.lastName}  
-/>
-
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onSave={handleSaveProfile}
+        currentFirstName={user ? user.firstName : ''}
+        currentLastName={user ? user.lastName : ''}
+      />
     </div>
   );
 };
