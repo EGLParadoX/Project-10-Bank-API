@@ -4,12 +4,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useLogoutHandler } from '../utils/handler';
 import logo from '../assets/argentBankLogo.png';
 
-
 const NavComponent = () => {
-    const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
-
-
-  
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+  const firstName = useSelector((state) => state.user.userData?.firstName);
   const navigate = useNavigate();
   const handleLogout = useLogoutHandler(navigate);
 
@@ -21,10 +18,16 @@ const NavComponent = () => {
       </Link>
       <div>
         {isAuthenticated ? (
-          <Link onClick={handleLogout} className="main-nav-item">
-            <i className="fa fa-sign-out"></i>
-            Log Out
-          </Link>
+          <>
+            <span className="main-nav-item firstname-link">
+              <i className="fa fa-user-circle"></i>
+              {firstName}
+            </span>
+            <Link onClick={handleLogout} className="main-nav-item">
+              <i className="fa fa-sign-out"></i>
+              Sign Out
+            </Link>
+          </>
         ) : (
           <Link to="/sign-in" className="main-nav-item">
             <i className="fa fa-user-circle"></i>
@@ -35,7 +38,6 @@ const NavComponent = () => {
     </nav>
   );
 };
-
 
 
 export default NavComponent;

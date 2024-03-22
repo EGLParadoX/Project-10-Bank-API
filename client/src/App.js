@@ -5,10 +5,12 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import SignIn from "./pages/Signin";
 import User from "./pages/User";
+import ApiService from "./services/ApiService";
 import { getUserToken } from "./utils/storage";
-import { loginSuccess } from "./redux/actions";
+import { loginSuccess, updateUserProfile } from "./redux/actions";
 import NavComponent from "./components/NavComponent";
 import FooterComponent from "./components/FooterComponent";
+
 
 function App() {
   const dispatch = useDispatch();
@@ -16,9 +18,17 @@ function App() {
     const token = getUserToken();
     if (token) {
       dispatch(loginSuccess({ token }));
+      const fetchUserProfile = async () => {
+        try {
+          const profileResponse = await ApiService.getUserProfile(token);
+          dispatch(updateUserProfile(profileResponse.data.body));
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
+        }
+      };
+      fetchUserProfile();
     }
   }, [dispatch]);
-
 
   return (
     <Router>
@@ -28,7 +38,7 @@ function App() {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/user" element={<User />} />
       </Routes>
-      <FooterComponent />
+      <FooterComponent/>
     </Router>
   );
 }
